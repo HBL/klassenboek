@@ -1,0 +1,4 @@
+RewriteEngine On
+RewriteBase /ovc/store
+RewriteCond %{REQUEST_URI} !download.php$
+RewriteRule ^(.*) download.php?name=$1 [L,QSA]

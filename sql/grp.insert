@@ -1,0 +1,1 @@
+cat bla.csv | sort | uniq | sed "s/\(.*\)/INSERT INTO ovckb.grp ( \`id\`, \`naam\`, \`schooljaar\`, \`stamklas\` ) VALUES ( NULL, '\1', '0910', 0 );/" | mysql -u root -p

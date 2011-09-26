@@ -1,0 +1,1 @@
+cat bla.csv | sort | uniq | sed "s/\(.*\),\(.*\)/INSERT IGNORE INTO ovckb.grp2vak ( grp_id, vak_id ) VALUES ( (SELECT id FROM ovckb.grp WHERE schooljaar='0910' AND naam='\1' ), ( SELECT id FROM ovckb.vak WHERE afkorting='\2' ));/"| mysql -p -u root

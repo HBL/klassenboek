@@ -1,0 +1,3 @@
+-- change DATABASE_NAME to name of database
+INSERT INTO `proc` (`db`, `name`, `type`, `specific_name`, `language`, `sql_data_access`, `is_deterministic`, `security_type`, `param_list`, `returns`, `body`, `definer`, `created`, `modified`, `sql_mode`, `comment`) VALUES
+('ovckb', 'KB_LGRP', 'FUNCTION', 'KB_LGRP', 'SQL', 'CONTAINS_SQL', 'YES', 'DEFINER', 0x0d0a6772702056415243484152282031362029202c0d0a76616b205641524348415228203820290d0a, 'varchar(25) CHARSET utf8', 0x424547494e2052455455524e2049462820677270205245474558502076616b2c206772702c20434f4e43415428206772702c20272f272c2076616b20292029203b20454e44, 'root@localhost', '2009-10-11 18:17:14', '2009-10-11 18:17:14', '', '');

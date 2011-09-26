@@ -1,0 +1,132 @@
+body {
+	font-family: Arial, sans-serif;
+	font-size: 12px;
+}
+.tag {
+	font-size: 10px;
+}
+.tag.SE, .tag.repetitie {
+	color: #FF0000;
+	font-weight: bold;
+}
+.tag.inleveren, .tag.so, .tag.proefwerk {
+	color: #FF0000;
+}
+
+.grp {
+	border-style: none none solid none;
+	border-width: 1px;
+	border-color: black;
+}
+.underline {
+	border-style: none none solid none;
+	border-width: 1px;
+	border-color: black;kk
+}
+.pers {
+	border-style: none none solid none;
+	border-width: 1px;
+	border-color: black;
+	background-color: #b0c4de;
+}
+.test {
+	background-color: #c4b0de;
+}
+.tost {
+	background-color: #deb0c4;
+}
+.tost {
+	background-color: #c4deb0;
+}
+#errmsg {
+	margin: 10px 50px 10px 50px;
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-bottom: 20px;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #000;
+	background-color: #f77;
+	text-align: center;
+}
+#errormsg {
+	margin: 10px 50px 10px 50px;
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-bottom: 20px;
+	padding-top: 20px;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #000;
+	background-color: #f77;
+	text-align: center;
+}
+#successmsg {
+	margin: 10px 50px 10px 50px;
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-bottom: 20px;
+	padding-top: 20px;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #000;
+	background-color: #7f7;
+	text-align: center;
+}
+#vertical {
+	border-left: 0px;
+	border-right: 1px solid #ccc;
+	height: 31px;
+}
+#footer {
+	font-size: 8px;
+	border-top: 2px solid #ccc;
+	margin-top: 15px;
+	margin-bottom: 5px;
+	padding-right: 10px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	height: 31px;
+	text-align: right;
+}
+#menu {
+	font-family: Arial, sans-serif;
+	font-weight: bold;
+	text-transform: uppercase;
+	margin: 10px 0;
+	padding: 0;
+	padding-top: 2px;
+	list-style-type: none;
+	background-color: #eee;
+	background-image: url(../images/logo.png);
+	background-repeat: no-repeat;
+	background-position: center right;
+	font-size: 14px;
+	height: 50px;
+	border-top: 0px solid #eee;
+	border-bottom: 2px solid #ccc;
+}
+fieldset {
+	margin: 0 auto;
+	padding: 10px;
+	max-width: 100%;
+	width: 450px;
+}
+#menu li {
+	float: left;
+	margin: 0;				
+	padding: 0 15px;
+	line-height: 40px;
+}
+#menu li a {
+	text-decoration: none;
+	padding-left: 5px;
+	padding-right: 5px;
+	display: block;
+	color: #666;
+}
+#menu li a:hover, #menu li.active a {
+	background-color: #f5f5f5;
+	border-bottom: 2px solid #DDD;
+	color: #999;
+}

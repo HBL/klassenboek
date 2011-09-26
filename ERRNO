@@ -1,0 +1,11 @@
+We use error codes in standard php exceptions. Those error codes must
+be integers. Since php doesn't have enum, we make al list here
+
+0 unrecoverable sql error (connection/database selection)
+1 sql error (some must be catched, like duplicate inserts and such)
+2 internal error (fout veroorzaakt door programmeerfout of gebruiker die
+  scripts omzeilt) permission denied valt hieronder
+
+These faults indicate some serious problems with the system or the user.
+Normal errors (login errors occur at the highest level in de code, so they don't
+need exceptions).

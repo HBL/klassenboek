@@ -1,0 +1,1 @@
+xlhtml -asc -xp:0 ~/Snel_Docent_lesgroep.xls | cut -f 3,4,6 | sort| uniq | tr '\t' ',' | sed "s/.\$//" | sed "s/'/\\\\'/" | sed "s/\(.*\),\(.*\),\(.*\)/SELECT * FROM \`ovckb\`.\`doc\` WHERE afkorting = '\1' AND ( achternaam != '\3' OR voorletters_tussenvoegsel != '\2' );/"| mysql -p -u root

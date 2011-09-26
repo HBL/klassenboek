@@ -1,0 +1,156 @@
+
+Idee:
+
+agenda waarin notities kunnen worden gekoppeld aan lesgroep+lesuur
+
+een stamklas is in dit systeem gelijkwaardig aan een lesgroep, er is in de
+database wel een flag waaraan je kunt zien dat het een stamklas is,
+(mede?) daarom gaan we ervan uit dat een lesgroep meerdere vakken kan hebben,
+elke lesgroep+vak kan ook meerdere docenten hebben (die schrijfrechten hebben
+op elkaars notities over die lesgroep)
+
+een leraar heeft schrijfrechten op alle lesgroepen waar hij les aan geeft en
+leesrechten op alle lesgroepen waarin leerlingen van hem zitten
+
+een leerling heeft leesrechten op alle lesgroepen waarin hij zit
+
+de leraar kan notities:
+- maken
+- verwijderen
+- verplaatsen (zowel naar een ander lesuur, als naar een andere lesgroep)
+- veranderen
+
+veiligheid:
+
+- gebruikers dienen een zinnig wachtwoord te kiezen en dat niet aan anderen
+  te geven
+- wachtwoorden worden opgeslagen als MySQL PASSWORD(), dus niet letterlijk
+- we verbinden via SSL zodat het password niet leesbaar is en de 
+  sessie niet gekaapt kan worden
+- database input (queries) worden sanatized, SQL injection is niet mogelijk
+- er wordt een log bijgehouden van alle logins/logouts/profielveranderingen
+  en mislukte inlogpogingen, met IP adres (wachtwoorden die gebruikt worden
+  bij mislukte inlogpogingen worden NIET opgeslagen)
+- elk script controleert zijn input (verkregen via GET of POST) op zinnigheid
+  alvorens iets te doen, alle pagina's (behalve login.php) zijn niet
+  toegankelijk voor mensen die niet ingelogd zijn en de meeste pagina's zijn
+  alleen toegankelijk voor mensen die als leraar zijn ingelogd
+  (veranderingen die de gebruiker handmatig aanbrengt aan de http GET
+  opties in de adresbalk hebben dus alleen effect als ze toegestaan zijn)
+
+
+best practices:
+
+- pagina's die het resultaat zijn van een POST operatie geven altijd een 
+  'Location: ' header (redirect)
+- alle pagina's zijn te bookmarken (het is niet altijd zinnig, het is bijvoorbeeld over het algemeen niet zinnig om een bevestigingspagina van het wissen van een notitie te bookmarken)
+- de back button werkt
+- het is mogelijk om in meerdere tab's/windows tegelijk te werken
+
+technologieen:
+
+http, cookies, html 4.01 strict, CSS, javascript, ssl, mysql en php5,
+compatibiliteit met meer browsers dan alleen firefox
+
+server:
+
+- het klassenboek kan in principe draaien op elke server met php5 en mysql, het
+  prototype draait op Debian GNU/Linux (stable/lenny)
+
+sessie:
+
+de session_id wordt opgeslagen in een cookie, in de server worden
+aan de cookie de volgende eigenschappen gekoppeld
+$_SESSION['leraar'] <- boolean als true, dan is de ingelogde persoon en leraar
+$_SESSION['userid'] <- is de loginnaam van de gebruiker
+$_SESSION['id'] <- is de doc.id of lln.id uit de database, voor leerlingen
+                   is dit gelijk aan de inlognaam
+
+om deze reden kan er vanuit een browserwindow maar 1 persoon tegelijk ingelogd
+zijn
+
+layout:
+/index.php: displayt per default de agenda van degene die ingelogd is en laat
+            de hele huidige week zien, gebruikers die toegang hebben tot andere
+	    agenda's kunnen daar in deze pagina bij, indien de gebruiker 
+	    schrijfrechten heeft in de agenda dan kan er op elke dag/uur
+	    iets geschreven worden, notities waarop de gebruiker schrijfrechten
+	    heeft kunnen worden aangepast, verwijderd of verplaatst naar een
+	    ander lesuur (of indien de notitie gekoppeld is aan en lesgroep
+	    en de gebruiker les geeft aan die lesgroep; naar een andere
+	    lesgroep)
+
+	    de GET parameters van het script zijn:
+	    week='geldige lesweek'
+	    dag=[1-5] maandag t/m vrijdag
+	    lesuur=[1-9]
+	    doelgroep={zelf,lesgroep}
+	    doc2grp2vak=<- is een doc2grp2vak.id uit de database
+
+/do_login.php; krijgt userid/password en koppelt de sessie aan de gebruiker
+               als de gebruiker bestaat, redirect naar index.php met een
+	       eventuele foutmelding als het innloggen mislukt is, alle inlog-
+	       pogingen worden met IP adres gelogged in de database
+
+/do_logout.php: dit vernietigt de huidige sessie, als er iemand ingelogd was
+                dan wordt dit gelogged in de database
+
+/profile.php: stelt de gebruiker in staat wijzigingen aan te brengen in zijn/
+              haar profiel
+
+	      GET parameter is:
+	      index=<- urlencoded lijst van parameters van de meest recente
+	               index.php, dit stelt profile in staat om de gebruiker
+		       weer in dezelfde index te laten terugkomen
+	
+/do_profile.php: wordt aangeroepen via profile.php, met de te wijzigen
+                 gegevens in POST parameters, deze pagina verwijst met
+		 een 'Location: ' header terug naar de profile.php pagina
+		 met in de GET parameters informatie over het succes van de
+		 update, een profielwijziging wordt gelogged in de database
+
+/new.php: alleen toegankelijk voor leraren
+          maakt een nieuwe notitie aan in de gegeven week, dag, lesuur,
+	  doelgroep, doc2grp2vak
+	  
+	  is toegankelijk vanuit agenda's waarop de ingelogde gebruiker
+	  schrijfrechten heeft
+
+	  naast de parameters van index.php heeft deze ook een index=
+	  parameter om terug te kunnen verwijzen naar de oorspronkelijke index
+
+/do_new.php: voert de bewerking op de database uit zoals geformuleerd door
+             new.php, parameters worden gecontroleerd zodat iemand die
+	     do_new.php op eigen houtje aanroept niet kan doen waar hij/zij
+	     geen rechten op heeft
+
+/beheer/index.php: BEVEILIGD met HTTP authenticatie!
+            mogelijkheid tot onderhoud database
+	    leerlingen, docenten, lesgroepen, vakken toevoegen/verwijderen
+	    enkele beheerders kunnen hier inloggen
+
+UI. op het hoogste level een serie tabs (met 'geheugen'), je kunt switchen
+van tab en terugswitchen zonder informatie te verliezen
+
+scherm (naam is geen tab en agenda is de default tab)
++------------------------------------------------------------+
+| naam | [agenda] | cijfers | mail | profiel | logout        |
++------------------------------------------------------------+
+|                                                            |
+
+licentie: (Affero?) GNU GPL v3
+
+deze licentie geeft de gebruiker van de software 4 belangrijke rechten
+0. het recht om het programma te gebruiken
+1. het recht om de sourcecode te bestuderen en aan te passen
+2. het recht om de sourcecode aan anderen te geven
+3. het recht om aangepaste versies aan anderen te geven
+
+belangrijke voorwaarde is dat als je (gemodificeerde versies van) dit programma
+aan anderen geeft, dat die anderen dan ook (onder deze voorwaarde) die 4 rechten
+krijgen.
+
+De Affero clausule houdt in dan gebruikers van we webinterface de php code
+mogen downloaden (en het database schema).
+
+

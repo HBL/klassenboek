@@ -1,0 +1,1 @@
+cat bla.csv| sort| uniq | sed "s/\(.*\)/INSERT IGNORE INTO ovckb.vak ( \`afkorting\` ) VALUES ( '\1' ); /" | mysql -u root --verbose -p

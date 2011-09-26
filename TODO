@@ -1,0 +1,8 @@
+- mysql backup optie in beheer
+- ticketsysteem voor inhaaltoetsen/afspraken (deels af)
+- simplify SQL queries in index.php
+- pas notities die veel te breed zijn automatisch aan
+- consolidate notitie-invoer en -wijzigen
+- autocomplete in relevante velden
+- emailadres verifieren bij wijziging
+- maak koppeling klassen <-> team
