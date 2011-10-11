@@ -1,2 +1,2 @@
 import_database.php
-includes/config.php
+include/config.php
