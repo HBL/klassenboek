@@ -1,5 +1,5 @@
 <? require('include/init.php');
-check_isset_array($_GET, 'callback', 'week_id', 'day_id', 'student_id');
+check_isset_array($_GET, 'callback', 'week_id', 'student_id');
 // Now, the magic happens ...
 $assignments = array();
 $cursor = mysql_query_safe(<<<EOT
@@ -19,11 +19,10 @@ SELECT agenda_id, notitie_id, lesuur, (
 			)
 		)
 	)
-) AND `week`="%s" AND `dag`="%s" ORDER BY lesuur
+) AND `week`="%s" ORDER BY dag, lesuur
 EOT
 , mysql_escape_safe($_GET['student_id']), 
-mysql_escape_safe($_GET['week_id']), 
-mysql_escape_safe($_GET['day_id']));
+mysql_escape_safe($_GET['week_id']));
 
 $assignments = array();
 
@@ -35,8 +34,13 @@ mysql_escape_safe($row['notitie_id']));
 	while ($tag_row = mysql_fetch_array($tag_cursor)) {
 		$tags[] = $tag_row['tag'];
 	}
+	if ($row['dag'] != $d) {
+		if ($day) $assignments["${d}"] = $day;
+		$day = array();
+		$d = $row['day'];
+	}
 	if ($row['lesuur'] != $i) {
-		if ($lesson) $assignments["{$i}"] = $lesson;
+		if ($lesson) $day["{$i}"] = $lesson;
 		$lesson = array();
 		$i = $row['lesuur'];
 	}
