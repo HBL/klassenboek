@@ -53,7 +53,5 @@ mysql_escape_safe($row['notitie_id']));
 }
 if ($lesson) $day["{$i}"] = $lesson;
 if ($day) $assignments["{$d}"] = $day;
-
-print_r($assignments);
 ?>
 <?= $_GET['callback'] ?>(<?= json_encode($assignments) ?>);
