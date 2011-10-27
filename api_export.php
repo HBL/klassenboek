@@ -34,7 +34,7 @@ mysql_escape_safe($row['notitie_id']));
 	while ($tag_row = mysql_fetch_array($tag_cursor)) {
 		$tags[] = $tag_row['tag'];
 	}
-	if ($row['lesuur'] != $i) {
+	if ($row['lesuur'] != $i || $row['dag'] != $d) {
 		if ($lesson) $day["{$i}"] = $lesson;
 		$lesson = array();
 		$i = $row['lesuur'];
