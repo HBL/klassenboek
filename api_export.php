@@ -34,15 +34,15 @@ mysql_escape_safe($row['notitie_id']));
 	while ($tag_row = mysql_fetch_array($tag_cursor)) {
 		$tags[] = $tag_row['tag'];
 	}
-	if ($row['dag'] != $d) {
-		if ($day) $assignments["{$d}"] = $day;
-		$day = array();
-		$d = $row['dag'];
-	}
 	if ($row['lesuur'] != $i) {
 		if ($lesson) $day["{$i}"] = $lesson;
 		$lesson = array();
 		$i = $row['lesuur'];
+	}
+	if ($row['dag'] != $d) {
+		if ($day) $assignments["{$d}"] = $day;
+		$day = array();
+		$d = $row['dag'];
 	}
 	$lesson[] = array(
 		'id' => $row['notitie_id'],
@@ -54,5 +54,6 @@ mysql_escape_safe($row['notitie_id']));
 if ($lesson) $day["{$i}"] = $lesson;
 if ($day) $assignments["{$d}"] = $day;
 
+print_r($assignments);
 ?>
 <?= $_GET['callback'] ?>(<?= json_encode($assignments) ?>);
