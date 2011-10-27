@@ -3,7 +3,7 @@ check_isset_array($_GET, 'callback', 'week_id', 'student_id');
 // Now, the magic happens ...
 $assignments = array();
 $cursor = mysql_query_safe(<<<EOT
-SELECT agenda_id, notitie_id, lesuur, (
+SELECT agenda_id, notitie_id, lesuur, dag, (
 	SELECT afkorting FROM vak WHERE vak_id = (
 		SELECT vak_id FROM grp2vak WHERE grp2vak_id = (
 			SELECT grp2vak_id FROM grp2vak2agenda WHERE agenda_id = agenda.`agenda_id`
@@ -34,15 +34,15 @@ mysql_escape_safe($row['notitie_id']));
 	while ($tag_row = mysql_fetch_array($tag_cursor)) {
 		$tags[] = $tag_row['tag'];
 	}
-	if ($row['dag'] != $d) {
-		if ($day) $assignments["${d}"] = $day;
-		$day = array();
-		$d = $row['day'];
-	}
 	if ($row['lesuur'] != $i) {
 		if ($lesson) $day["{$i}"] = $lesson;
 		$lesson = array();
 		$i = $row['lesuur'];
+	}
+	if ($row['dag'] != $d) {
+		if ($day) $assignments["{$d}"] = $day;
+		$day = array();
+		$d = $row['dag'];
 	}
 	$lesson[] = array(
 		'id' => $row['notitie_id'],
@@ -51,7 +51,9 @@ mysql_escape_safe($row['notitie_id']));
 		'subject' => $row['vak']
 	);
 }
-$assignments["{$i}"] = $lesson;
+if ($lesson) $day["{$i}"] = $lesson;
+if ($day) $assignments["{$d}"] = $day;
 
+print_r($assignments);
 ?>
 <?= $_GET['callback'] ?>(<?= json_encode($assignments) ?>);
