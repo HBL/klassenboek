@@ -1,6 +1,6 @@
 <? require('include/init.php');
 check_isset_array($_GET, 'callback', 'week_id', 'student_id');
-// Now, the magic happens ...
+header('Content-Type: text/javascript'); // BB4 won't recognize JSONP-calls without this header been sent ...
 $assignments = array();
 $cursor = mysql_query_safe(<<<EOT
 SELECT agenda_id, notitie_id, lesuur, dag, (
