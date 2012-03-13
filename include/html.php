@@ -65,7 +65,8 @@ function gen_html_footer() { ?>
 <p id="footer">
 Online Klassenboek &copy; 2010 Rik Snel, 2011 Het Baarnsch Lyceum.<br>
 Released as <a href="http://www.gnu.org/philosophy/free-sw.html">free software</a> without warranties under <a href="http://www.fsf.org/licensing/licenses/agpl-3.0.html">GNU AGPL v3</a>.<br>
-Sourcecode: subversion co <a href="http://cube.dyndns.org/svn/misc/branch/kb-0.1/">http://cube.dyndns.org/svn/misc/branch/kb-0.1/</a>
+Sourcecode: <a 
+href="https://github.com/HBL/klassenboek">https://github.com/HBL/klassenboek</a>
 </p>
 </body>
 </html>

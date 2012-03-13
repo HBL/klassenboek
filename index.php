@@ -125,7 +125,7 @@ switch ($doelgroep) {
 EOL;
 		$inner_query =<<<EOQ
 SELECT agenda.dag, agenda.lesuur, CONCAT(KB_LGRP(grp.naam, vak.afkorting), ': ') target,
-	notities.text, notities.notitie_id, NULL action_name, NULL action_id, 
+	notities.creat, notities.text, notities.notitie_id, NULL action_name, NULL action_id, 
 	1 dont, tags2notities.tag_id, 1 grp, 1 edit
 FROM notities
 JOIN agenda USING (notitie_id)
@@ -141,7 +141,7 @@ GROUP BY notities.notitie_id, tags2notities.tag_id, action_id
 UNION
 SELECT agenda.dag, agenda.lesuur,
 	CONCAT(KB_LGRP(grp.naam, vak.afkorting), ': ') target,
-	IF(cijfer IS NULL, notities.text, CONCAT(notities.text, ' <span style="color: ', IF(cijfer < 5.5, 'red', 'green'), ';">(', cijfer, ')</span>')) text,
+	notities.creat, IF(cijfer IS NULL, notities.text, CONCAT(notities.text, ' <span style="color: ', IF(cijfer < 5.5, 'red', 'green'), ';">(', cijfer, ')</span>')) text,
 	notities.notitie_id, NULL action_name, NULL action_id, NULL dont, tags2notities.tag_id, 1 grp, 0 edit
 FROM notities
 JOIN agenda USING (notitie_id)
@@ -159,10 +159,10 @@ AND doc2grp2vak.ppl_id IS NULL
 GROUP BY notitie_id, tag_id
 UNION
 SELECT bla0.dag, bla0.lesuur,
-target, bla0.text, bla0.notitie_id, action_name, action_id,
+target, bla0.creat, bla0.text, bla0.notitie_id, action_name, action_id,
 GROUP_CONCAT(CONCAT(bla.agenda_id, '-', tags2children.tag_id)) dont, tags2notities.tag_id, 0 grp, edit
 FROM ( 
-	SELECT notitie_id, text, agenda.dag, agenda.lesuur, agenda.agenda_id,
+	SELECT notitie_id, notities.creat, text, agenda.dag, agenda.lesuur, agenda.agenda_id,
 		CONCAT(GROUP_CONCAT(IF(corro.type != 'leerling', corro.login,
 				KB_NAAM(corro.naam0, corro.naam1, corro.naam2))
 			COLLATE utf8_unicode_ci), ': ') target, ppl2agenda.allow_edit edit
@@ -193,7 +193,7 @@ EOQ;
 EOL;
 		$inner_query =<<<EOQ
 SELECT agenda.dag, agenda.lesuur, CONCAT(KB_LGRP(grp.naam, vak.afkorting), ': ') target,
-	notities.text, notities.notitie_id, action_name, action_id, 
+	notities.creat, notities.text, notities.notitie_id, action_name, action_id, 
 	GROUP_CONCAT(CONCAT(bla.agenda_id, '-', tags2children.tag_id)) dont,
 	tags2notities.tag_id, 1 grp, IF(auth.ppl_id, 1, 0) edit
 FROM notities
@@ -217,7 +217,7 @@ GROUP BY notities.notitie_id, tags2notities.tag_id, action_id
 UNION
 SELECT agenda.dag, agenda.lesuur,
 	CONCAT(IF(vak.afkorting IS NULL, grp.naam, vak.afkorting), ': ') target,
-	IF(cijfer IS NULL, notities.text, CONCAT(notities.text, ' <span style="color: ', IF(cijfer < 5.5, 'red', 'green'), ';">(', cijfer, ')</span>')) text,
+	notities.creat, IF(cijfer IS NULL, notities.text, CONCAT(notities.text, ' <span style="color: ', IF(cijfer < 5.5, 'red', 'green'), ';">(', cijfer, ')</span>')) text,
 	notities.notitie_id, action_name, action_id, GROUP_CONCAT(CONCAT(bla.agenda_id, '-', tags2children.tag_id)) dont, tags2notities.tag_id, 1 grp, IF(auth.ppl_id, 1, 0) edit
 FROM notities
 JOIN agenda USING (notitie_id)
@@ -242,10 +242,10 @@ AND doc2grp2vak.ppl_id IS NULL
 GROUP BY notitie_id, tag_id, action_id
 UNION
 SELECT bla0.dag, bla0.lesuur,
-target, bla0.text, bla0.notitie_id, action_name, action_id,
+target, bla0.creat, bla0.text, bla0.notitie_id, action_name, action_id,
 GROUP_CONCAT(CONCAT(bla.agenda_id, '-', tags2children.tag_id)) dont, tags2notities.tag_id, 0 grp, edit
 FROM ( 
-	SELECT notitie_id, text, agenda.dag, agenda.lesuur, agenda.agenda_id,
+	SELECT notitie_id, notities.creat, text, agenda.dag, agenda.lesuur, agenda.agenda_id,
 		CONCAT(GROUP_CONCAT(IF(corro.type != 'leerling', corro.login,
 				KB_NAAM(corro.naam0, corro.naam1, corro.naam2))
 			COLLATE utf8_unicode_ci), ': ') target, auth.allow_edit edit
@@ -277,10 +277,10 @@ EOQ;
 EOL;
 		$inner_query =<<<EOQ
 SELECT bla0.dag, bla0.lesuur,
-target, bla0.text, bla0.notitie_id, action_name, action_id,
+target, bla0.creat, bla0.text, bla0.notitie_id, action_name, action_id,
 GROUP_CONCAT(CONCAT(bla.agenda_id, '-', tags2children.tag_id)) dont, tags2notities.tag_id, 0 grp, edit
 FROM ( 
-	SELECT notitie_id, text, agenda.dag, agenda.lesuur, agenda.agenda_id,
+	SELECT notitie_id, text, notities.creat, agenda.dag, agenda.lesuur, agenda.agenda_id,
 		CONCAT(GROUP_CONCAT(IF(corro.type != 'leerling', corro.login,
 				KB_NAAM(corro.naam0, corro.naam1, corro.naam2))
 			COLLATE utf8_unicode_ci), ': ') target, auth.allow_edit edit
@@ -306,7 +306,7 @@ LEFT JOIN tags2notities AS tags2children ON children.notitie_id = tags2children.
 LEFT JOIN ppl2agenda AS bla ON c_agenda.agenda_id = bla.agenda_id AND bla.ppl_id = targets.ppl_id
 GROUP BY bla0.notitie_id, tags2notities.tag_id, action_id
 UNION
-SELECT dag, lesuur, CONCAT(IF(vak.afkorting IS NULL, grp.naam, vak.afkorting), ': ') target, text, notitie_id, NULL action_name, NULL action_id, 1 dont, tags2notities.tag_id, 1 grp, IF(doc2grp2vak.ppl_id IS NOT NULL, 1, 0)  edit
+SELECT dag, lesuur, CONCAT(IF(vak.afkorting IS NULL, grp.naam, vak.afkorting), ': ') target, notities.creat, text, notitie_id, NULL action_name, NULL action_id, 1 dont, tags2notities.tag_id, 1 grp, IF(doc2grp2vak.ppl_id IS NOT NULL, 1, 0)  edit
 FROM agenda
 JOIN notities USING (notitie_id)
 JOIN grp2vak2agenda USING (agenda_id)
@@ -317,7 +317,7 @@ LEFT JOIN vak USING (vak_id)
 LEFT JOIN doc2grp2vak ON grp2vak.grp2vak_id = doc2grp2vak.grp2vak_id AND doc2grp2vak.ppl_id = '{$_SESSION['ppl_id']}'
 WHERE week = '$week' AND agenda.schooljaar = '$schooljaar' AND grp_id = ( SELECT grp_id FROM grp2vak WHERE grp2vak_id = '$grp2vak_id' )
 UNION
-SELECT dag, lesuur, CONCAT(KB_LGRP(grp.naam, vak.afkorting), ': ') target, text, notitie_id, NULL action_name, NULL action_id, 1 dont, tags2notities.tag_id, 1 grp, IF(auth.ppl_id IS NOT NULL, 1, 0)  edit
+SELECT dag, lesuur, CONCAT(KB_LGRP(grp.naam, vak.afkorting), ': ') target, notities.creat, text, notitie_id, NULL action_name, NULL action_id, 1 dont, tags2notities.tag_id, 1 grp, IF(auth.ppl_id IS NOT NULL, 1, 0)  edit
 FROM agenda
 JOIN notities USING (notitie_id)
 JOIN grp2vak2agenda USING (agenda_id)
@@ -364,11 +364,11 @@ if ($_SESSION['type'] == 'personeel' && $doelgroep == 'lesgroep' && $_SESSION['t
 }
 
 $testresult = mysql_query_safe(<<<EOT
-SELECT dag, lesuur, GROUP_CONCAT(text ORDER BY grp DESC, notitie_id SEPARATOR '\n') text
+SELECT dag, lesuur, GROUP_CONCAT(text ORDER BY grp DESC, notitie_id SEPARATOR '\n') text 
 FROM (
 	SELECT dag, lesuur, CONCAT(
 		'<div class="',
-		IF(grp, 'grp', 'pers'), '">',
+		IF(grp, 'grp', 'pers'), '" title="', created, '">',
 		'<strong>', IFNULL(target, ''),'</strong>',
 		IFNULL(bla3.text, ''),
 		IFNULL(GROUP_CONCAT(tags SEPARATOR ''), ''),
@@ -379,7 +379,7 @@ FROM (
 				notitie_id, dag, lesuur, '$common', 'V')), ''),
 		'</div>') text, notitie_id, 1 edit, grp
 	FROM (
-		SELECT dag, lesuur, target, text, edit, IFNULL(CONCAT(
+		SELECT dag, lesuur, target, creat AS created, text, edit, IFNULL(CONCAT(
 			'\n<span class="tag ', tag, '">[',
 			tag,
 			IF(GROUP_CONCAT(dont) IS NOT NULL OR edit = 0 OR edit IS NULL, '',
@@ -486,6 +486,7 @@ for ($i = 1; $i <= 9; $i++) { ?>
 <tr align="left" valign="top"><td><? echo '<span title="'.$lestijden[$i].'">'.$i.'</span>' ?></td>
 <?	for ($j = 1; $j <= 5; $j++) {
 		echo('<td>');
+
 		if (is_array($row) && $row[0] == $j && $row[1] == $i) {
 			echo($row[2]);
 			$row = mysql_fetch_row($testresult);
@@ -500,6 +501,6 @@ if ($ttinfo) { ?>
 </table>
 </p>
 <? if ($_SESSION['type'] != 'ouder') { ?>
-<p>Persoonlijke notitities zijn <span class='pers'>blauw</span>. 
+<p>Persoonlijke notitities zijn <span class='pers'>blauw</span>. <br />Door met je muis op een regel te staan kun je zien wanneer huiswerk is opgegeven. De datum is weergegeven in het formaat jaar-maand-dag.
 <? } ?>
 <? gen_html_footer(); ?>
