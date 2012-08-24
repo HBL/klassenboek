@@ -26,7 +26,7 @@ FROM agenda WHERE agenda_id IN
 		)
 	) AND `week`="%s" ORDER BY dag, lesuur
 EOT
-, mysql_escape_safe($student_id), mysql_escape_safe($_GET['student_id']),
+, mysql_escape_safe($student_id), mysql_escape_safe($student_id),
 mysql_escape_safe($_GET['week_id']));
 
 $assignments = array();
