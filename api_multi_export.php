@@ -12,6 +12,11 @@ SELECT agenda_id, notitie_id, lesuur, dag,
 			(SELECT grp2vak_id FROM grp2vak2agenda WHERE agenda_id = agenda.`agenda_id`)
         )
 	) AS vak,
+	(SELECT naam FROM grp WHERE grp_id = 
+		(SELECT grp_id FROM grp2vak WHERE grp2vak_id = 
+			(SELECT grp2vak_id FROM grp2vak2agenda WHERE agenda_id = agenda.`agenda_id`)
+        )
+	) AS groep,
 	(SELECT `text` FROM notities WHERE `notitie_id`=agenda.notitie_id
 	) AS `text` 
 FROM agenda WHERE agenda_id IN 
@@ -53,7 +58,8 @@ mysql_escape_safe($row['notitie_id']));
 		'id' => $row['notitie_id'],
 		'text' => $row['text'],
 		'tags' => $tags,
-		'subject' => $row['vak']
+		'subject' => $row['vak'],
+		'group' => $row['groep']
 	);
 }
 if ($lesson) $day["{$i}"] = $lesson;
