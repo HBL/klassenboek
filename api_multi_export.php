@@ -1,5 +1,5 @@
 <? require('include/init.php');
-check_isset_array($_GET, 'week_id', 'student_ids', 'year');
+check_isset_array($_GET, 'week_id', 'student_ids');
 header('Content-Type: text/javascript'); // BB4 won't recognize JSONP-calls without this header been sent ...
 $student_ids = explode(',', $_GET['student_ids']);
 $students = array();
@@ -32,7 +32,7 @@ FROM agenda WHERE agenda_id IN
 	) AND `week`="%s" AND schooljaar="%s" ORDER BY dag, lesuur
 EOT
 , mysql_escape_safe($student_id), mysql_escape_safe($student_id),
-mysql_escape_safe($_GET['week_id']), mysql_escape_safe($_GET['year']));
+mysql_escape_safe($_GET['week_id']), mysql_escape_safe($schooljaar));
 
 $assignments = array();
 
